@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 @Component
 public class FeedScheduler {
@@ -20,6 +22,7 @@ public class FeedScheduler {
     private final FeedDownloader feedDownloader;
     private final FeedContainer feedContainer;
     private final FeedConverter feedConverter;
+    private final List<String> rssLinks = new LinkedList<>();
 
     @Autowired
     public FeedScheduler(final FeedDownloader feedDownloader,
@@ -28,16 +31,22 @@ public class FeedScheduler {
         this.feedDownloader = feedDownloader;
         this.feedContainer = feedContainer;
         this.feedConverter = feedConverter;
+        fillRssLinks();
+    }
+
+    private void fillRssLinks() {
+        rssLinks.add("https://www.rmf24.pl/fakty/polska/feed");
+        rssLinks.add("https://www.rmf24.pl/fakty/swiat/feed");
+        rssLinks.add("https://www.rmf24.pl/ekonomia/feed");
+        rssLinks.add("https://www.rmf24.pl/nauka/feed");
+        rssLinks.add("https://www.rmf24.pl/kultura/feed");
+        rssLinks.add("https://www.rmf24.pl/sport/feed");
+        rssLinks.add("https://www.rmf24.pl/rozrywka/ciekawostki/feed");
     }
 
     @Scheduled(fixedRate = 60000)
     public void getFeed() {
-//        add("RMF Kraj", "https://www.rmf24.pl/fakty/polska/feed");
-//        add("RMF Świat", "https://www.rmf24.pl/fakty/swiat/feed");
-//        add("RMF Ekonomia", "https://www.rmf24.pl/ekonomia/feed");
-//        add("TVN24 Najważniejsze", "https://www.tvn24.pl/najwazniejsze.xml");
-
-        final String url = "https://www.rmf24.pl/fakty/polska/feed";
+        final String url = rssLinks.get(new Random().nextInt(rssLinks.size()));
         logger.debug("Collecting feed from {}", url);
         final SyndFeed syndFeed = feedDownloader.download(url);
         final List<FeedModel> feedModelList = feedConverter.convert(syndFeed);

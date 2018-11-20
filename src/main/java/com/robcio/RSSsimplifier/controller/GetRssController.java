@@ -6,14 +6,13 @@ import com.robcio.RSSsimplifier.model.FeedModel;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping(path = "/rss")
 @Api(value = "/rss", description = "Operations about RSS")
 public class GetRssController {
@@ -26,7 +25,6 @@ public class GetRssController {
     }
 
     @GetMapping(path = "/")
-    @ResponseBody
     @ApiOperation(value = "Returns current RSS feed stored in app")
     public List<FeedModel> getRss() {
         return feedContainer.getFeedList();
